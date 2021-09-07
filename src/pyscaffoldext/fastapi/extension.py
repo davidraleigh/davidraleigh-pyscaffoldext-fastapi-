@@ -1,9 +1,8 @@
+from pathlib import Path
 from typing import List
 
-from pathlib import Path
 from pyscaffold.actions import Action, ActionParams, ScaffoldOpts, Structure
 from pyscaffold.extensions import Extension
-
 from pyscaffold.operations import no_overwrite
 from pyscaffold.structure import merge, reject
 from pyscaffold.templates import get_template
@@ -13,9 +12,7 @@ from pyscaffoldext import templates
 
 class Fastapi(Extension):
     """
-    This class serves as the skeleton for your new PyScaffold Extension. Refer
-    to the official documentation to discover how to implement a PyScaffold
-    extension - https://pyscaffold.org/en/latest/extensions.html
+    PyScaffold Extension for fastapi using github.com/kamikaze/fastapi-project-template
     """
 
     def activate(self, actions: List[Action]) -> List[Action]:
@@ -47,7 +44,7 @@ def remove_files(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
 
 def add_files(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
     """Add custom extension files. See :obj:`pyscaffold.actions.Action`"""
-    opts['requirements'] = ['pydantic']
+    opts["requirements"] = ["pydantic"]
 
     main_template = get_template("main", relative_to=templates.__name__)
     init_template = get_template("init", relative_to=templates.__name__).template
@@ -55,11 +52,19 @@ def add_files(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
     core_template = get_template("core", relative_to=templates.__name__)
 
     api_http_template = get_template("api_http", relative_to=templates.__name__)
-    api_models_template = get_template("api_models", relative_to=templates.__name__).template
+    api_models_template = get_template(
+        "api_models", relative_to=templates.__name__
+    ).template
 
-    db_alembic_ini_template = get_template("db_alembic_ini", relative_to=templates.__name__).template
-    db_migrations_env_template = get_template("db_migrations_env", relative_to=templates.__name__)
-    db_script_py_mako_template = get_template("db_script_py_mako", relative_to=templates.__name__).template
+    db_alembic_ini_template = get_template(
+        "db_alembic_ini", relative_to=templates.__name__
+    ).template
+    db_migrations_env_template = get_template(
+        "db_migrations_env", relative_to=templates.__name__
+    )
+    db_script_py_mako_template = get_template(
+        "db_script_py_mako", relative_to=templates.__name__
+    ).template
     db_models_template = get_template("db_models", relative_to=templates.__name__)
 
     test_template = get_template("test", relative_to=templates.__name__)
@@ -69,17 +74,17 @@ def add_files(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
             opts["package"]: {
                 "api": {
                     "http.py": (api_http_template, no_overwrite()),
-                    "models.py": (api_models_template, no_overwrite())
+                    "models.py": (api_models_template, no_overwrite()),
                 },
                 "db": {
                     "migrations": {
                         "env.py": (db_migrations_env_template, no_overwrite()),
                         "scripts.py.mako": (db_script_py_mako_template, no_overwrite()),
-                        "__init__.py": ""
+                        "__init__.py": "",
                     },
                     "models.py": (db_models_template, no_overwrite()),
                     "alembic.ini": (db_alembic_ini_template, no_overwrite()),
-                    "__init__.py": ""
+                    "__init__.py": "",
                 },
                 "__init__.py": (init_template, no_overwrite()),
                 "__main__.py": (main_template, no_overwrite()),
@@ -95,8 +100,8 @@ def add_files(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
 
 def custom_setup_cfg(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
     from configupdater import ConfigUpdater
-    from pyscaffold.templates import add_pyscaffold
     from pyscaffold import dependencies as deps
+    from pyscaffold.templates import add_pyscaffold
 
     template = get_template("setup_cfg")
     cfg_str = template.substitute(opts)
@@ -111,6 +116,6 @@ def custom_setup_cfg(struct: Structure, opts: ScaffoldOpts) -> ActionParams:
     pyscaffold = updater["pyscaffold"]
     pyscaffold["version"].add_after.option("package", opts["package"])
 
-    struct['setup.cfg'] = lambda a: str(updater)
+    struct["setup.cfg"] = lambda a: str(updater)
 
     return struct, opts
