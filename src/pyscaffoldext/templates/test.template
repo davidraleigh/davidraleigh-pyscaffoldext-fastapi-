@@ -1,0 +1,7 @@
+from ${qual_pkg}.conf import Settings
+
+
+def test_fib():
+    """API Tests"""
+    settings = Settings()
+    assert settings.alembic_config == "alembic.ini"
